@@ -1,13 +1,19 @@
 package ru.white747.reminderbot.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "user_")
+@Table(name = "user_", indexes = {
+        @Index(name = "idx_user__tlg_id_name", columnList = "tlg_id, name")
+})
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
