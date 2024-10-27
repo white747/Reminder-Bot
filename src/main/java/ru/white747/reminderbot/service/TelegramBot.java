@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -29,21 +30,23 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.configuration = configuration;
     }
 
-    @Override
-    public String getBotUsername() {
-        return "Lineage2M_Boss_Reminder";
-    }
+    @Value("${telegram.token}")
+    private String token;
 
-//    @Override
-//    public String getBotUsername() {
-//        return "Boss_Reminder_Bot";
-//    }
+    @Value("${telegram.name}")
+    private String name;
 
 
     @Override
     public String getBotToken() {
-        return "7610104791:AAEQTeIm7P2pu5f3lxTSSWV9CtacFu44Nqs";
+        return token;
     }
+
+    @Override
+    public String getBotUsername() {
+        return name;
+    }
+
 
     @Override
     public void onUpdateReceived(Update update) {
