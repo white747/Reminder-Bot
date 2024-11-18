@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.white747.reminderbot.configuration.TelegramBotStarterConfiguration;
-//import ru.white747.reminderbot.repoditory.UserRepository;
+import ru.white747.reminderbot.repoditory.UserRepository;
 
 import java.util.*;
 
@@ -22,12 +22,13 @@ import java.util.*;
 public class TelegramBot extends TelegramLongPollingBot {
 
     final TelegramBotStarterConfiguration configuration;
-//    private final UserRepository userRepository;
+    final UserRepository userRepository;
 
 
     @Autowired
-    public TelegramBot(TelegramBotStarterConfiguration configuration) {
+    public TelegramBot(TelegramBotStarterConfiguration configuration, UserRepository userRepository) {
         this.configuration = configuration;
+        this.userRepository = userRepository;
     }
 
     @Value("${telegram.token}")
@@ -50,13 +51,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("++++++++++++++++++++++++++++++");
         Message msg = update.getMessage();
         User user = msg.getFrom();
         try {
             if (msg.getText().equals("/start")) {
-                System.out.println("++++++++++++++++++++++++++++++");
-                sendText(user.getId(), "Спать пошел, " + user.getUserName() + "!");
+                String name = "";
+                if (user.getUserName()!=null && !user.getUserName().isEmpty()) {
+                    name = user.getUserName();
+                }
+                sendText(user.getId(), "Пользователь, " + name + " идентифицирован!");
+                ru.white747.reminderbot.model.User user1 = new ru.white747.reminderbot.model.User();
+                user.setId(user.getId());
+                user1.setName(name);
+                userRepository.save(user1);
             }
             boolean flagOfMute = false;
             if (msg.isCommand() || !msg.isCommand()) {
